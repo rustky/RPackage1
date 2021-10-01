@@ -23,7 +23,7 @@ new.centers.mat <- RPackage1::update_centers_interface(
 Compare two matricies
  ```
 x <- as.matrix(
-    iris[, c("Petal.Length", "Petal.Width")])
+    iris[, c("Petal.Length", "Petal.Width")]
 y <- as.matrix(
     iris[, c("Petal.Length", "Petal.Width")])
 N_centers <- nrow(x)
@@ -35,7 +35,7 @@ status <-
   Compute cluster vector using Kmeans algorithm
   
  ```
-data_mat <- as.matrix(iris[, c("Petal.Length", "Petal.Width")])
+data_mat <- as.matrix(iris[, c("Petal.Length", "Petal.Width")]
 K <- 3
 centers_mat <- data_mat[sample(1:nrow(data_mat), K), ]
 cluster.vec <- RPackage1::KMeans_interface(data_mat, centers_mat)
