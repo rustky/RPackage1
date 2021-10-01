@@ -1,0 +1,27 @@
+{
+    "id": "CA1D11ED",
+    "path": "~/Documents/RPackage1/man/Kmeans_interface.Rd",
+    "project_path": "man/Kmeans_interface.Rd",
+    "type": "r_doc",
+    "hash": "3680688780",
+    "contents": "",
+    "dirty": false,
+    "created": 1633065105708.0,
+    "source_on_save": false,
+    "relative_order": 7,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "10,1",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1633065166,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1633065166658,
+    "read_only": false,
+    "read_only_alternatives": []
+}

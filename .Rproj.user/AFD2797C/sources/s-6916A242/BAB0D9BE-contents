@@ -84,8 +84,7 @@ IntegerVector KMeans_interface
   int N_centers = centers_mat.nrow();
   int N_features = centers_mat.ncol();
   NumericMatrix new_centers_mat(N_centers,N_features);
-  NumericMatrix old_centers_mat(N_centers,N_features);
-  double *old_centers_ptr = &old_centers_mat[0];
+  double *old_centers_ptr = &centers_mat[0];
   double *new_centers_ptr = &new_centers_mat[0];
   IntegerVector cluster_count_vec(N_centers);
   int *cluster_count_ptr = &cluster_count_vec[0];
