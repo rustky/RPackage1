@@ -1,0 +1,36 @@
+library(RPackage1)
+data.mat <- as.matrix(
+iris[, c("Petal.Length", "Petal.Width")])
+## k-means initialization.
+K <- 3
+set.seed(1)
+(centers.mat <- data.mat[sample(1:nrow(data.mat), K), ])
+## k-means assignment in C++ code.
+(clust.id.vec <- RPackage1::find_closest_center_interface(
+data.mat, centers.mat))
+(new.centers <- RPackage1::update_centers_interface(data.mat,
+clust.id.vec,K))
+library(RPackage1)
+data.mat <- as.matrix(
+iris[, c("Petal.Length", "Petal.Width")])
+## k-means initialization.
+K <- 3
+set.seed(1)
+(centers.mat <- data.mat[sample(1:nrow(data.mat), K), ])
+## k-means assignment in C++ code.
+(clust.id.vec <- RPackage1::find_closest_center_interface(
+data.mat, centers.mat))
+(new.centers <- RPackage1::update_centers_interface(data.mat,
+clust.id.vec,K))
+library(RPackage1)
+data.mat <- as.matrix(
+iris[, c("Petal.Length", "Petal.Width")])
+## k-means initialization.
+K <- 3
+set.seed(1)
+(centers.mat <- data.mat[sample(1:nrow(data.mat), K), ])
+## k-means assignment in C++ code.
+(clust.id.vec <- RPackage1::find_closest_center_interface(
+data.mat, centers.mat))
+(new.centers <- RPackage1::update_centers_interface(data.mat,
+clust.id.vec,K))

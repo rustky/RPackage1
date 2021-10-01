@@ -1,0 +1,26 @@
+{
+    "id": "706AF179",
+    "path": "~/Documents/RPackage1/man/update_centers_interface.Rd",
+    "project_path": "man/update_centers_interface.Rd",
+    "type": "r_doc",
+    "hash": "2918382142",
+    "contents": "",
+    "dirty": false,
+    "created": 1633059864378.0,
+    "source_on_save": false,
+    "relative_order": 20,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "22,1",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1633060624,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1633060624198,
+    "read_only": false,
+    "read_only_alternatives": []
+}

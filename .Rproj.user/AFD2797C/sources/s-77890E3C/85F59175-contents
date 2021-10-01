@@ -1,0 +1,17 @@
+#include "compare_matricies.h"
+
+int compare_matricies(double *x, double *y, int N_centers, int N_features){
+  if(N_features < 1){
+    return ERROR_N_DATA_MUST_BE_POSITIVE;
+  }
+  if(N_centers < 1){
+    return ERROR_N_CENTERS_MUST_BE_POSITIVE;
+  }
+  for(int idx = 0; idx < N_centers * N_features; idx++){
+    if(x[idx] - y[idx] != 0){
+      return 1;
+    }
+  }
+  return 0;
+}
+

@@ -1,0 +1,24 @@
+{
+    "args": [
+        "-I/usr/lib/llvm-12/lib/clang/12.0.0/include",
+        "-I/usr/include/c++/10",
+        "-I/usr/include/x86_64-linux-gnu/c++/10",
+        "-I/usr/include/c++/10/backward",
+        "-I/usr/lib/gcc/x86_64-linux-gnu/10/include",
+        "-I/usr/local/include",
+        "-I/usr/include/x86_64-linux-gnu",
+        "-I/usr/include",
+        "-I/home/kyle/R/x86_64-pc-linux-gnu-library/4.0/Rcpp/include",
+        "-std=gnu++11",
+        "-I/usr/share/R/include",
+        "-DNDEBUG",
+        "-fpic",
+        "-ffile-prefix-map=/build/r-base-zIXWOG/r-base-4.0.4=.",
+        "-fstack-protector-strong",
+        "-D_FORTIFY_SOURCE=2"
+    ],
+    "pch": "Rcpp",
+    "is_cpp": true,
+    "hash": "16330573731632720372",
+    "compiler": "16709514895075617703"
+}

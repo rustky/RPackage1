@@ -1,0 +1,22 @@
+#' KMeans algo
+#'
+#' KMeans algorithm that computes cluster labels for every data observation
+#'
+#' @param data.mat numeric input data matrix [n x p]
+#' @param centers.mat numeric random starting centers, with the number of rows corresponiding the desired number of clusters [k x p]
+#'
+#' @return numeric matrix of cluster assignments [1 x n]
+#' @export
+#'
+#' @examples
+#' data.mat <- as.matrix(
+#' iris[, c("Petal.Length", "Petal.Width")])
+#' K <- 3
+#' centers.mat <- data.mat[sample(1:nrow(data.mat), K), ]
+#' cluster.vec <- RPackage1::KMeans_interface(data.mat, centers.mat)
+#' 
+#' 
+Kmeans <- function(data.mat, centers.mat){
+  cluster.vec <- RPackage1::KMeans_interface(data.mat, centers.mat)
+  return cluter.vec
+}

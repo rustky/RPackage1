@@ -1,0 +1,100 @@
+# Kyle Rust Homework 2
+#1.1
+url <- 'https://web.stanford.edu/~hastie/ElemStatLearn/datasets/zip.test.gz'
+destfile <- "C:/Users/kyler/OneDrive/Documents/CS 599/Homework 01/zip.test.gz"
+if(file.exists(destfile) == FALSE)
+{
+  download.file(url,destfile)
+} else{
+  print("File already downloaded")
+}
+test.data <- data.table::fread(destfile)
+test.matrix <- as.matrix(test.data[,-1])
+results.list <- list()
+k.num <- 40
+for(num.clusters in 1:k.num){
+  results.list[[paste(num.clusters)]] <- stats::kmeans(test.matrix,num.clusters)
+}
+results <- do.call(cbind,results.list)
+library(data.table)
+results.dt <- data.table(
+  tot.withinss = matrix(unlist(results[6,])),
+  metric = 'Tot.Withinss')
+library(ggplot2)
+ggplot(data=results.dt,aes(x=1:k.num,y=tot.withinss.V1))+
+  geom_line()+
+  geom_point()+
+  ylab('tot.withinss')+
+  xlab('K')
+
+# 1.2
+labels <- as.matrix(test.data[,1])
+rand.idxs.list <- list()
+for(num.clusters in 1:k.num){
+  rand.idxs.list[[paste(num.clusters)]] <- pdfCluster::adj.rand.index(
+    labels,results.list[[num.clusters]][['cluster']])
+}
+rand.idx = do.call(rbind,rand.idxs.list)
+rand.idxs.dt <- data.table(
+  rand.idx.k = rand.idx,
+  K = 1:k.num,
+  metric = 'ARI'
+)
+ggplot(data = rand.idxs.dt,aes(x=K,y=rand.idx.k.V1))+
+  geom_point()+
+  geom_line()+
+  ylab('ARI')
+#1.3
+
+#2.1
+KMEANS <- function(test.matrix, K){
+  test.dt <- data.table(test.matrix)
+  centers.mat <- test.matrix[sample(1:NROW(test.dt),K),,drop=FALSE]
+  (centers.dt <- data.table(
+    centers.mat,
+    cluster=factor(1:NROW(centers.mat))))
+  flag = 1
+  old.centers.mat <- matrix(0, nrow = K, ncol = 2)
+  while (flag == 1) {
+    (dist.dt <- data.table(expand.grid(
+      centers.i = 1:nrow(centers.dt),
+      data.i = 1:nrow(test.dt))))
+    dist.dt[, error := {
+      rowSums((test.matrix[data.i,]-centers.mat[centers.i,])^2)
+    }]
+    assignment.dt <- dist.dt[, .SD[which.min(error)],by=data.i]
+    new.means.dt <- assignment.dt[, {
+      data.table(t(colMeans(test.matrix[data.i,])))
+    }, by=centers.i]
+    (centers.mat <- new.means.dt[, colnames(centers.mat), with=FALSE])
+    if(all((centers.mat - old.centers.mat) == 0)){
+      flag = 0
+    }
+    else{
+      old.centers.mat <- centers.mat
+    }
+  }
+  return(list(
+    tot.withinss=sum(assignment.dt$error),
+    cluster=assignment.dt$centers.i))
+}
+algo.list <- list(mine=KMEANS, stats=stats::kmeans)
+ss.dt.list <- list()
+for(K in 1:20){
+  for(algo.name in names(algo.list)){
+    for(seed in 1:2){
+      set.seed(seed)
+      algo.fun <- algo.list[[algo.name]]
+      result.list <- algo.fun(test.matrix, K)
+      ss.dt.list[[paste(K, algo.name, seed)]] <- data.table(
+        K, algo.name, seed, error=result.list$tot.withinss)
+    }
+  }
+}
+#2.2
+compare.kmeans.dt <- do.call(rbind,ss.dt.list)
+ggplot(data = compare.kmeans.dt)+
+  geom_point(aes(x=K,y=error,color=algo.name,group=seed))+
+  facet_grid(.~seed)
+
+  

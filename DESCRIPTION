@@ -1,0 +1,13 @@
+Package: RPackage1
+Type: Package
+Title: Compute predicted clusters using KMeans.
+Version: 1.0
+Date: 2021-09-02
+Author: Kyle Rust
+Maintainer: Kyle Rust <krr387@nau.edu>
+Description: Compute Kmeans using Rcpp in a R package
+License: GPL (>= 2)
+Imports: Rcpp (>= 1.0.7)
+LinkingTo: Rcpp
+Suggests: ramify, testthat
+RoxygenNote: 7.1.2

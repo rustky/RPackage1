@@ -1,0 +1,11 @@
+int knn(
+    const int N_data,
+    const int N_centers,
+    const int N_features,
+    const double *data_ptr,
+    const double *centers_ptr,
+    //inputs above, outputs below.
+    int *cluster_ptr
+){
+  return 0;
+}

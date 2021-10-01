@@ -1,0 +1,26 @@
+{
+    "id": "36756630",
+    "path": "~/Documents/RPackage1/NAMESPACE",
+    "project_path": "NAMESPACE",
+    "type": "r_namespace",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1632860267287.0,
+    "source_on_save": false,
+    "relative_order": 14,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "0,40",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1632782520,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1632782520,
+    "read_only": false,
+    "read_only_alternatives": []
+}

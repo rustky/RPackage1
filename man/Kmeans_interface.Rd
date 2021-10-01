@@ -1,0 +1,23 @@
+\name{KMeans_interface}
+\alias{KMeans_interface}
+\title{Title}
+\usage{
+KMeans_interface(data_mat, centers_mat)
+}
+\arguments{
+\item{data.mat}{numeric matrix of input data [n x p]}
+
+\item{centers.mat}{numeric matrix of randomly starting cluster centers with the rows corresponding the amount of desired clusters [k x p]}
+}
+\value{
+numeric vector of cluster assignments [1 x n]
+}
+\description{
+Title
+}
+\examples{
+data_mat <- as.matrix(iris[, c("Petal.Length", "Petal.Width")])
+K <- 3
+centers_mat <- data_mat[sample(1:nrow(data_mat), K), ]
+cluster.vec <- RPackage1::KMeans_interface(data_mat, centers_mat)
+}

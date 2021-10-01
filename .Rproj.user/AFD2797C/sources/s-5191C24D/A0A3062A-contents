@@ -1,0 +1,160 @@
+# Kyle Rust Homework 3
+#1.1
+url <- 'https://web.stanford.edu/~hastie/ElemStatLearn/datasets/zip.test.gz'
+destfile <- "C:/Users/kyler/OneDrive/Documents/CS 599/Homework 01/zip.test.gz"
+# destfile <- "~/Documents/CS-599-Unsupervised-Algorithms/Homework 01/zip.test.gz"
+if(file.exists(destfile) == FALSE)
+{
+  download.file(url,destfile)
+} else{
+  print("File already downloaded")
+}
+test.data <- data.table::fread(destfile)
+test.matrix <- as.matrix(test.data[,-1])
+results.list <- list()
+
+subest.idx <- 500
+G.num <- 20
+library(mclust)
+test.mat.subset <- test.matrix[1:subest.idx,]
+labels <- as.matrix(test.data[1:subest.idx, 1])
+random.pairs <- mclust::hcRandomPairs(test.mat.subset)
+for(cluster in 1:G.num){
+  results.list[[paste(cluster)]] <- mclust::Mclust(
+    test.mat.subset, cluster, modelNames = "EEI", verbose = FALSE,
+    initialization = list(hcParis = random.pairs))
+}
+results <- do.call(rbind, results.list)
+library(data.table)
+results.dt <- data.table(
+  loglik= as.matrix(unlist(results[,'loglik'])),
+  G = 1:G.num
+)
+library(ggplot2)
+ggplot(data= results.dt,aes(x= G, y= -loglik.V1))+
+  geom_line()+
+  geom_point()+
+  ylab('Neg LogLik')
+
+# 1.2
+ARI.list <- list()
+for(cluster in 1:G.num){
+  ARI.list[[paste(cluster)]] <- pdfCluster::adj.rand.index(
+    labels,t(results.list[[cluster]][['classification']]))
+}
+ARI.vec <- do.call(rbind, ARI.list)
+GMM.ARI.dt <- data.table(
+  ARI = ARI.vec,
+  K = 1:G.num,
+  algorithm = 'GMM')
+ggplot(data = GMM.ARI.dt,aes(x = K, y = ARI.V1))+
+  geom_point()+
+  geom_line()+
+  ylab('ARI')
+
+# 1.3
+kmeans.list <- list()
+kmeans.ARI.list <- list()
+for(num.clusters in 1:G.num){
+  kmeans.list[[paste(num.clusters)]] <- stats::kmeans(
+    test.mat.subset,num.clusters)
+  kmeans.ARI.list[[paste(num.clusters)]] <- pdfCluster::adj.rand.index(
+    labels,kmeans.list[[num.clusters]][['cluster']])
+}
+kmeans.ARI.table <- do.call(rbind, kmeans.ARI.list)
+ARI.Kmeans.dt <- data.table(
+  ARI = kmeans.ARI.table,
+  K = 1:G.num,
+  algorithm = 'kmeans'
+)
+ARI.compare.dt <- rbind(GMM.ARI.dt, ARI.Kmeans.dt)
+ggplot()+
+  geom_line(data = ARI.compare.dt,aes(x = K, y = ARI.V1 ,color = algorithm))+
+  ylab('ARI')
+
+# 2.1
+data.mat <- as.matrix(
+  iris[, c("Petal.Width", "Petal.Length")])
+
+GMM <- function(data.mat, K){
+  rand.mat <- matrix(
+    runif(nrow(data.mat)*K),
+    nrow=nrow(data.mat),
+    ncol=K)
+  prob.mat <- rand.mat/rowSums(rand.mat)
+  cluster.param.list <- list()
+  log.lik.old <- 0
+  flag <- 1
+  while(flag == 1){
+    for(cluster in 1:K){
+      prob.vec <- prob.mat[, cluster]
+      mean.vec <- colSums(data.mat * prob.vec)/sum(prob.vec)
+      mean.mat <- matrix(
+        mean.vec, nrow(data.mat), ncol(data.mat), byrow=TRUE)
+      diff.mat <- data.mat - mean.mat
+      tolerance <- 1e-6
+      this.cluster.params <- list(
+        prior.weight=mean(prob.vec),
+        mean.vec=mean.vec,
+        cov.vec=colSums(diff.mat^2 * prob.vec)/sum(prob.vec)+tolerance)
+      cluster.param.list[[cluster]] <- this.cluster.params
+    }
+    log.density.mat <- matrix(NA, nrow(data.mat), K)
+    prior.weight.mat <- matrix(NA, nrow(data.mat), K)
+    for(cluster in 1:K){
+      params <- cluster.param.list[[cluster]]
+      mean.mat <- matrix(
+        params$mean.vec, nrow(data.mat), ncol(data.mat),
+        byrow=TRUE)
+      sd.vec <- sqrt(params$cov.vec)
+      sd.mat <- matrix(
+        sd.vec, nrow(data.mat), ncol(data.mat),
+        byrow=TRUE)
+      dnorm.mat <- dnorm(data.mat, mean.mat, sd.mat, log=TRUE)
+      sd.vec[which(colMeans(!is.finite(dnorm.mat))==1)]
+      log.density.mat[,cluster] <- rowSums(dnorm.mat)
+      prior.weight.mat[,cluster] <- params$prior.weight
+    }
+    max.vec <- apply(log.density.mat, 1, max)
+    log.sum.vec <- log(
+      rowSums(prior.weight.mat*exp(log.density.mat - max.vec))
+    )
+    log.total.density.vec <- max.vec + log.sum.vec
+    which(!is.finite(log.total.density.vec))
+    in.exp <- log(prior.weight.mat)+log.density.mat-log.total.density.vec
+    prob.mat <- exp(in.exp)
+    log.lik.new <- sum(log.total.density.vec)
+    # browser()
+    which(!is.finite(prob.mat))
+    if(log.lik.old == log.lik.new){
+      flag <- 0
+      output.list <- list(
+        loglik = log.lik.new,
+        clusters = ramify::argmax(prob.mat, rows = TRUE)
+      )
+    }
+    else{
+      log.lik.old <- log.lik.new
+    }
+  }
+  return(output.list)
+}
+
+algo.list <- list(mine=GMM, stats=mclust::Mclust)
+ss.dt.list <- list()
+for(K in 1:20){
+  for(algo.name in names(algo.list)){
+    for(seed in 1:2){
+      set.seed(seed)
+      algo.fun <- algo.list[[algo.name]]
+      result.list <- algo.fun(data.mat, K)
+      ss.dt.list[[paste(K, algo.name, seed)]] <- data.table(
+        K, algo.name, seed, NLL=-result.list$loglik)
+    }
+  }
+}
+compare.gmm.dt <- do.call(rbind,ss.dt.list)
+ggplot(data=compare.gmm.dt,aes(x = K, y = NLL, color = algo.name))+
+  facet_grid(.~seed)+
+  geom_point()
+

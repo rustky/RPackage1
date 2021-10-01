@@ -1,0 +1,124 @@
+[
+    {
+        "file": "/home/kyle/Documents/RPackage1/src/Kmeans.cpp",
+        "file_last_write": 1633036113.0,
+        "definitions": [
+            {
+                "usr": "c:@F@Kmeans#1I#1I#1I#*1d#*d#S1_#*I#S2_#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "Kmeans(const int, const int, const int, const double *, double *, double *, int *, int *)",
+                "file": "/home/kyle/Documents/RPackage1/src/Kmeans.cpp",
+                "line": 6,
+                "column": 5
+            }
+        ]
+    },
+    {
+        "file": "/home/kyle/Documents/RPackage1/src/Kmeans.h",
+        "file_last_write": 1633029075.0,
+        "definitions": []
+    },
+    {
+        "file": "/home/kyle/Documents/RPackage1/src/compare_matricies.cpp",
+        "file_last_write": 1633036198.0,
+        "definitions": [
+            {
+                "usr": "c:@F@compare_matricies#*d#S0_#I#I#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "compare_matricies(double *, double *, int, int)",
+                "file": "/home/kyle/Documents/RPackage1/src/compare_matricies.cpp",
+                "line": 4,
+                "column": 5
+            }
+        ]
+    },
+    {
+        "file": "/home/kyle/Documents/RPackage1/src/compare_matricies.h",
+        "file_last_write": 1633028862.0,
+        "definitions": []
+    },
+    {
+        "file": "/home/kyle/Documents/RPackage1/src/find_closest_center.cpp",
+        "file_last_write": 1633035821.0,
+        "definitions": [
+            {
+                "usr": "c:@F@find_closest_center#1I#1I#1I#*1d#S0_#*I#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "find_closest_center(const int, const int, const int, const double *, const double *, int *)",
+                "file": "/home/kyle/Documents/RPackage1/src/find_closest_center.cpp",
+                "line": 5,
+                "column": 5
+            }
+        ]
+    },
+    {
+        "file": "/home/kyle/Documents/RPackage1/src/find_closest_center.h",
+        "file_last_write": 1632780926.0,
+        "definitions": []
+    },
+    {
+        "file": "/home/kyle/Documents/RPackage1/src/interface.cpp",
+        "file_last_write": 1633036029.0,
+        "definitions": [
+            {
+                "usr": "c:@F@find_closest_center_interface#$@N@Rcpp@S@Matrix>#VI14#@N@Rcpp@ST>1#T@PreserveStorage#S0_#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "find_closest_center_interface(Rcpp::NumericMatrix, Rcpp::NumericMatrix)",
+                "file": "/home/kyle/Documents/RPackage1/src/interface.cpp",
+                "line": 12,
+                "column": 15
+            },
+            {
+                "usr": "c:@F@update_centers_interface#$@N@Rcpp@S@Matrix>#VI14#@N@Rcpp@ST>1#T@PreserveStorage#$@N@Rcpp@S@Vector>#VI13#@N@Rcpp@ST>1#T@PreserveStorage#I#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "update_centers_interface(Rcpp::NumericMatrix, Rcpp::IntegerVector, int)",
+                "file": "/home/kyle/Documents/RPackage1/src/interface.cpp",
+                "line": 42,
+                "column": 15
+            },
+            {
+                "usr": "c:@F@compare_matricies_interface#$@N@Rcpp@S@Matrix>#VI14#@N@Rcpp@ST>1#T@PreserveStorage#S0_#I#I#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "compare_matricies_interface(Rcpp::NumericMatrix, Rcpp::NumericMatrix, int, int)",
+                "file": "/home/kyle/Documents/RPackage1/src/interface.cpp",
+                "line": 71,
+                "column": 5
+            },
+            {
+                "usr": "c:@F@KMeans_interface#$@N@Rcpp@S@Matrix>#VI14#@N@Rcpp@ST>1#T@PreserveStorage#S0_#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "KMeans_interface(Rcpp::NumericMatrix, Rcpp::NumericMatrix)",
+                "file": "/home/kyle/Documents/RPackage1/src/interface.cpp",
+                "line": 80,
+                "column": 15
+            }
+        ]
+    },
+    {
+        "file": "/home/kyle/Documents/RPackage1/src/update_centers.cpp",
+        "file_last_write": 1633036047.0,
+        "definitions": [
+            {
+                "usr": "c:@F@update_centers#1I#1I#1I#*1d#*1I#*I#*d#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "update_centers(const int, const int, const int, const double *, const int *, int *, double *)",
+                "file": "/home/kyle/Documents/RPackage1/src/update_centers.cpp",
+                "line": 4,
+                "column": 5
+            }
+        ]
+    },
+    {
+        "file": "/home/kyle/Documents/RPackage1/src/update_centers.h",
+        "file_last_write": 1632934805.0,
+        "definitions": []
+    }
+]

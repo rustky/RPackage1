@@ -1,0 +1,17 @@
+#' Title
+#'
+#' @param data.mat numeric matrix of input data [n x p]
+#' @param centers.mat numeric matrix of randomly starting cluster centers with the rows corresponding the amount of desired clusters [k x p]
+#'
+#' @return numeric vector of cluster assignments [1 x n]
+#' @export
+#'
+#' @examples
+#' data.mat <- as.matrix(iris[, c("Petal.Length", "Petal.Width")])
+#' K <- 3
+#' centers.mat <- data.mat[sample(1:nrow(data.mat), K), ]
+#' cluster.vec <- RPackage1::KMeans_interface(data.mat, centers.mat)
+Kmeans <- function(data.mat, centers.mat){
+  cluster.vec <- RPackage1::KMeans_interface(data.mat, centers.mat)
+  cluster.vec
+}

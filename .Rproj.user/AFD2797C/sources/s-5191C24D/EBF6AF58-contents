@@ -1,0 +1,203 @@
+# Kyle Rust Homework 
+# 1.1
+url <- 'https://web.stanford.edu/~hastie/ElemStatLearn/datasets/zip.test.gz'
+# destfile <- "C:/Users/kyler/OneDrive/Documents/CS 599/Homework 01/zip.test.gz"
+destfile <- "~/Documents/CS-599-Unsupervised-Algorithms/Homework 01/zip.test.gz"
+if(file.exists(destfile) == FALSE)
+{
+  download.file(url,destfile)
+} else{
+  print("File already downloaded")
+}
+test.data <- data.table::fread(destfile)
+test.matrix <- as.matrix(test.data[,-1])
+num.clusters <- 10
+kmeans.time <- system.time(kmeans.results <- stats::kmeans(
+  test.matrix,num.clusters))
+# 1.2
+hclust.times <- list()
+subset.vec <- as.integer(seq(100,600, by = 25))
+for(data.length in 1:length(subset.vec)){
+  small.test.mat <- test.matrix[1:subset.vec[data.length],]
+  elapsed.time <- system.time({
+  small.test.dist <- stats::dist(small.test.mat)
+  hclust.results <- stats::hclust(
+    small.test.dist, method = "single")
+  cutree.results <- stats::cutree(hclust.results, k = num.clusters)})
+  hclust.times[[paste(data.length)]] <- elapsed.time}
+  hclust.times
+  subset.vec[13]
+# 1.3 
+n.data.vec <- as.integer(11^seq(1, log10(600), l=5))
+library(data.table)
+all.timings.list <- list()
+for(n.data in n.data.vec){
+  n.data.mat <- test.matrix[1:n.data,]
+  n.timings <- microbenchmark::microbenchmark(
+    hclust={
+      n.data.dist <- stats::dist(n.data.mat)
+      hclust.results <- stats::hclust(
+        small.test.dist, method = "single")
+      cutree.results <- stats::cutree(hclust.results, k = num.clusters)},
+    kmeans={
+      kmeans(n.data.mat, num.clusters)
+    },
+    times = 3)
+  class(n.timings)
+  all.timings.list[[paste(n.data)]] <- data.table(
+  n.data,
+  n.timings)
+  (all.timings <- do.call(rbind, all.timings.list))
+  all.timings[, seconds := time/1e9]
+  all.timings[, algorithm := expr]
+}
+library(ggplot2)
+ggplot()+
+  geom_point(aes(
+    n.data, seconds, color=algorithm),
+    data=all.timings)+
+  scale_x_log10()+
+  scale_y_log10()
+# 1.4
+subset.size <- subset.vec[14]
+linkage.mat <- test.matrix[1:subset.size,]
+labels <- as.matrix(test.data[1:subset.size,1])
+dist.mat <- stats::dist(linkage.mat)
+linkage.list <- list("complete", "average")
+hclust.err.values.list <- list()
+for(linkage in linkage.list){
+  hc.tree <- stats::hclust(dist.mat, linkage)
+  str(hc.tree)
+  head(hc.tree$merge)
+  n.clusters.vec <- 1:20
+  cut.result <- stats::cutree(hc.tree, k=n.clusters.vec)
+  library(data.table)
+  for(n.clusters in n.clusters.vec){
+    print(names(hclust.err.values.list))
+    hclust.err.values.list[[paste(linkage, n.clusters)]] <-
+      data.table(
+        n.clusters,
+        linkage,
+        ARI=pdfCluster::adj.rand.index(
+          cut.result[, n.clusters],
+          labels))
+  }
+}
+(hclust.err.values <- do.call(
+  rbind, hclust.err.values.list))
+k.num <- 20
+kmeans.ARI.list <- list()
+for(num.clusters in 1:k.num){
+  kmeans.res <- stats::kmeans(linkage.mat,num.clusters)
+  kmeans.ARI.list[[paste(num.clusters)]] <- 
+    pdfCluster::adj.rand.index(kmeans.res[["cluster"]],labels)
+}
+kmeans.ARI <- do.call(rbind,kmeans.ARI.list)
+kmeans.ARI.dt <- data.table(
+  n.clusters = 1:20,
+  ARI=kmeans.ARI,
+  algorithm='kmeans'
+)
+
+library(ggplot2)
+ggplot()+
+  geom_line(aes(
+    color=linkage,
+    x=n.clusters,
+    y=ARI),
+    data=hclust.err.values)+
+  geom_line(data=kmeans.ARI.dt,aes(
+    color=algorithm,
+    x=n.clusters,
+    y=ARI.V1
+  ))
+segs.dt.list <- list()
+lab.dt.list <- list()
+for(linkage.method in c("complete", "average")){
+  d.mat <- stats::dist(linkage.mat, method="manhattan")
+  cl.tree <- stats::hclust(d.mat, method=linkage.method)
+  dendro.result <- ggdendro::dendro_data(cl.tree)
+  (label.dt <- data.table(dendro.result[["labels"]]))
+  label.dt[, Labels := labels ]
+  segs.dt.list[[linkage.method]] <- data.table(
+    linkage.method,
+    dendro.result[["segments"]])
+  lab.dt.list[[linkage.method]] <- data.table(
+    linkage.method,
+    label.dt)
+}
+(lab.dt <- do.call(rbind, lab.dt.list))
+(segs.dt <- do.call(rbind, segs.dt.list))
+
+ggplot()+
+  facet_grid(. ~ linkage.method, labeller=label_both)+
+  geom_segment(aes(
+    x=x,
+    y=y,
+    xend=xend,
+    yend=yend),
+    data=segs.dt)+
+  geom_point(aes(
+    x, y, color=Labels),
+    data=lab.dt)+
+  scale_fill_continuous(guide = guide_legend())
+
+# 2.1
+Hclust <- function(data.mat, K){
+  row.indices <- 1:nrow(data.mat)
+  library(data.table)
+  pair.dt <- data.table(expand.grid(
+    row.i=row.indices,
+    row.j=row.indices))
+  pair.dt[, dist := rowSums(abs(
+    data.mat[row.i,]-data.mat[row.j,]))]
+  d.mat <- matrix(
+    pair.dt[["dist"]],
+    nrow(data.mat), nrow(data.mat))
+  wide.dt <- data.table::dcast(pair.dt, row.i ~ row.j)
+  d.mat <- as.matrix(wide.dt[, -1])
+  d.mat <- matrix(
+    NA, nrow(data.mat), nrow(data.mat))
+  for(row.i in 1:nrow(data.mat)){
+    d.mat[row.i,] <- colSums(abs(
+      data.mat[row.i,]-t(data.mat)))
+  }
+  diag(d.mat) <- NA
+  obs.in.each.cluster <- as.list(1:nrow(data.mat))
+  for(num.clusters in 1:(nrow(d.mat) - K)){
+    min.indices <- which(min(d.mat, na.rm=TRUE) == d.mat)
+    min.index.dt <- data.table(
+      min.indices,
+      row=row(d.mat)[min.indices],
+      col=col(d.mat)[min.indices])
+    first.min <- min.index.dt[1]
+    index.to.keep <- first.min[["col"]]
+    index.to.remove <- first.min[["row"]]
+    join.indices <- c(index.to.remove, index.to.keep)
+    d.mat.copy <- d.mat
+    new.cluster.distances <- #single linkage criterion.
+      apply(d.mat[join.indices,], 2, min)
+    d.mat.copy[index.to.keep,] <- new.cluster.distances
+    d.mat.copy[,index.to.keep] <- new.cluster.distances
+    d.mat.new <- d.mat.copy[-index.to.remove, -index.to.remove]
+    obs.in.each.cluster.copy <- obs.in.each.cluster
+    obs.in.each.cluster.copy[[index.to.keep]] <-
+      unlist(obs.in.each.cluster[join.indices])
+    obs.in.each.cluster.new <-
+      obs.in.each.cluster.copy[-index.to.remove]
+    d.mat <- d.mat.new
+    obs.in.each.cluster <- obs.in.each.cluster.new
+  }
+  cluster.id.vec <- integer(nrow(data.mat))
+  for(cluster.id in seq_along(obs.in.each.cluster.new)){
+    obs.indices <- obs.in.each.cluster.new[[cluster.id]]
+    cluster.id.vec[obs.indices] <- cluster.id}
+  return(cluster.id.vec) 
+}
+test.cluster <- 10
+test.dist <- stats::dist(linkage.mat, method='manhattan')
+test.tree <- stats::hclust(test.dist, "single")
+test.cut <- stats::cutree(test.tree, k=test.cluster)
+mine.results <- Hclust(linkage.mat, test.cluster)
+results <- base::table(mine.results, test.cut)
+results
